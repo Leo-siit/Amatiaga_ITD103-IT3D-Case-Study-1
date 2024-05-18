@@ -1,0 +1,15 @@
+
+.login-container {
+    background-color: blue;
+    background-size: cover;
+}
+
+.logo {
+
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000; /* Adjust as needed */
+    width: 300px;
+}
