@@ -32,37 +32,45 @@ function Login() {
     useEffect(() => {
         // Load external stylesheets dynamically
         const bootstrapCss = document.createElement("link");
-        bootstrapCss.href = "//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css";
+        bootstrapCss.href = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css";
         bootstrapCss.rel = "stylesheet";
         bootstrapCss.id = "bootstrap-css";
         document.head.appendChild(bootstrapCss);
-
-        // Load external scripts dynamically
-        const bootstrapJs = document.createElement("script");
-        bootstrapJs.src = "//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js";
-        document.body.appendChild(bootstrapJs);
-
-        const jqueryJs = document.createElement("script");
-        jqueryJs.src = "//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js";
-        document.body.appendChild(jqueryJs);
-
+    
+        // Load external scripts dynamically with correct order
+        const loadScripts = async () => {
+            const jqueryJs = document.createElement("script");
+            jqueryJs.src = "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js";
+            jqueryJs.async = false; // Ensure it is loaded before Bootstrap
+            document.body.appendChild(jqueryJs);
+    
+            jqueryJs.onload = () => {
+                const bootstrapJs = document.createElement("script");
+                bootstrapJs.src = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js";
+                bootstrapJs.async = false; // Ensure it is loaded after jQuery
+                document.body.appendChild(bootstrapJs);
+            };
+        };
+    
+        loadScripts();
+    
         // Optionally, load Font Awesome CSS dynamically
         const fontAwesomeCss = document.createElement("link");
         fontAwesomeCss.href = "https://use.fontawesome.com/releases/v5.0.8/css/all.css";
         fontAwesomeCss.rel = "stylesheet";
         document.head.appendChild(fontAwesomeCss);
-
+    
         // Set background color for the entire page
         document.body.style.backgroundColor = "#070b0c"; // Replace with your desired color
-
+    
         return () => {
             // Clean up the dynamically loaded resources on component unmount
             document.head.removeChild(bootstrapCss);
-            document.body.removeChild(bootstrapJs);
-            document.body.removeChild(jqueryJs);
             document.head.removeChild(fontAwesomeCss);
+            document.body.removeChild(document.querySelector('script[src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"]'));
+            document.body.removeChild(document.querySelector('script[src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"]'));
         };
-    }, []);
+    }, []);    
 
     return (
         <div>
@@ -99,7 +107,7 @@ function Login() {
                                     </div>
                                     {error && <div className="text-danger">{error}</div>}
                                 </form>
-                                <p className="text-center">Don't have an account? <Link to="/authentication/sign-up">Sign up</Link></p>
+                                <p className="text-center">Don&apos;t have an account? <Link to="/authentication/sign-up">Sign up</Link></p>
                             </article>
                         </div>
                     </div>
